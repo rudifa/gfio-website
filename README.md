@@ -99,8 +99,16 @@ Options:
 
 ### Generating test \*.md files
 
-`scripts/convert-to-md.js -n 22` gives the same tags (tracks, technos, audiences) for each session, as defined in `scripts/utils/prototype.md` file.
+`scripts/convert-to-md.js -n 22` gives the same tags to each session, as defined in `scripts/utils/prototype.md` file.
 
-`scripts/convert-to-md.js -n 22 -randomize` gives random tags (tracks, technos, audiences) for each session, with values defined in `scripts/utils/convert-utils.js` file.
+`scripts/convert-to-md.js -n 22 -randomize` gives random tags to each session, with values defined in `scripts/utils/convert-utils.js` file.
+
+`scripts/convert-to-md.js -i 7 -n 5` converts 7 issues starting from the 5th issue (0 based).
 
 ### Testing the current (tracks, technos, audiences) features
+
+1. Page Sessions now displays **lists of all tags** found in all sessions, grouped under the corresponding tag type name.
+
+2. Clicking on a tag name displays a **list of all session titles** tagged with this tag.
+
+3. Clicking on a session title displays the session content.
