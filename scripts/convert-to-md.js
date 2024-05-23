@@ -10,16 +10,17 @@ import { convertProtoToMdFile } from "./utils/convert-utils.js";
 const argv = yargs(hideBin(process.argv))
   .usage("\nThis script converts GitHub issues to markdown files.")
   .option("i", {
-    alias: "issue",
-    describe: "Convert ith issue",
+    alias: "index",
+    describe: "Convert starting with ith issue",
     type: "number",
     default: 0,
   })
   .option("n", {
     alias: "number",
-    describe: "Convert first n issues",
+    describe: "Convert n issues",
     type: "number",
     default: 0,
+    demandOption: true,
   })
   .option("r", {
     alias: "randomize",
@@ -35,12 +36,12 @@ const argv = yargs(hideBin(process.argv))
   .help("h")
   .alias("h", "help").argv;
 
-if (argv.i === 0 && argv.n === 0) {
-  console.error("Please provide either -i or -n option.");
+
+// Reject negative values for i and n
+if (argv.i < 0 || argv.n < 0) {
+  console.error("Invalid arguments: i and n must be positive integers.");
   process.exit(1);
 }
-
-// console.error(`argv: ${JSON.stringify(argv, null, 2)}`);
 
 // Prepare and perform the conversion
 
@@ -57,18 +58,12 @@ const prototype = await readFile(prototypeFile, "utf8");
 
 // Convert issues to markdown files in range [fromIdx, toIdx)
 
-let fromIdx = 0;
-let toIdx = 0;
+argv.index = Math.min(argv.index, issues.length - 1);
+const fromIdx = argv.index;
 
-if (argv.i > 0) {
-  console.error(`Converting ${getOrdinalSuffix(argv.i)} issue...`);
-  fromIdx = argv.i - 1;
-  toIdx = argv.i;
-} else if (argv.n > 0) {
-  console.error(`Converting first ${argv.n} issues...`);
-  fromIdx = 0;
-  toIdx = argv.n;
-}
+const toIdx = Math.min(fromIdx + argv.number, issues.length);
+
+console.error(`Converting ${toIdx - fromIdx} issues starting with ${fromIdx}...`);
 
 issues.slice(fromIdx, toIdx).forEach((issue, index) => {
   convertProtoToMdFile(issue, prototype, destDir, argv.randomize, argv.verbose);
